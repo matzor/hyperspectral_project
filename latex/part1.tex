@@ -2,8 +2,37 @@
 
 \subsection{Finding the spectral resolution}
 
+To find the spectral resoulution of the dataset, we load the \textit{hico\_wl} array, which contains the
+wavelength corresponding to band \textit{i}. We loop through the array and compare each wavelength
+\textit{i} with the the previous wavelenght \textit{i-1} and we find that the average distance between
+the wavelengths is $5.728 nm$, which seems to be constant between all wavelengths. 
+
 \subsection{Relation to human color perception}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/human_spectrum.png}
+    \caption{Graph for the human color sensitivity curves, according to Wikipedia \cite{website:wiki_spectral}}
+    \label{fig:human_spectra}
+\end{figure}
+
+The color sensitivity of the human eye is shown in \cref{fig:human_spectra}. As we can 
+see, blue color has a peak around $445 nm$ (\textit{S}-curve), green peaks at $535 nm$ 
+(\textit{M}-curve), and red at $575 nm$ (\textit{L}-curve). 
+
 \subsection{Create a pseudo RGB image from the hyperspectral bands}
+
+From the \textit{hico\_wl} array, we find that Blue (445nm) is located at index \textit{i = 7}, 
+green (535nm) at \textit{i = 23}, and finally red (575nm) at \textit{i = 30}. We combine these indices from 
+the HICO dataset and show it as an image to create a pseudo RGB image, shown in \cref{fig:pseudo_rgb}.
+
+\todo{Fix image}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/pseudo_rgb.png}
+    \caption{Pseudo RGB image}
+    \label{fig:pseudo_rgb}
+\end{figure}
 
 \subsection{Representative spectra for selected points}
