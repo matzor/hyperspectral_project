@@ -56,7 +56,7 @@ plt.savefig("fig/pseudo_rgb.png")
 #spy.save_rgb('rgb.jpg', I, [34, 25, 8])
 
 # RGB with points
-plt.figure(10)
+plt.figure(10, figsize=(14, 7))
 plt.subplot(121, aspect='auto')
 plt.title("Spectrum of selected points")
 points = np.array([[20, 100, 400], [20, 70, 30]]) # [[x0, x1, x2], [y0, y1, y2]]
