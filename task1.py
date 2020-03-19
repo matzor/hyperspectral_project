@@ -33,7 +33,7 @@ X = X.T
 
 # To convert a matrix X back into a hyperspectral image cube:
 I = np.reshape(X.T, [H,W,L])
-I = I / 255.0
+#I = I / 255.0
 
 # Plot a single spectral band
 #plt.imshow(I[:,:,30])
@@ -56,16 +56,38 @@ plt.savefig("fig/pseudo_rgb.png")
 #spy.save_rgb('rgb.jpg', I, [34, 25, 8])
 
 # RGB with points
+plt.figure(10)
+plt.subplot(121, aspect='auto')
+plt.title("Spectrum of selected points")
+points = np.array([[20, 100, 400], [20, 70, 30]]) # [[x0, x1, x2], [y0, y1, y2]]
+colors = ['g', 'r', 'y']
+legends = ["Deep water", "Shallow water", "Vegetation"]
+view = spy.imshow(I, (34, 25, 8), fignum=10)
+plt.scatter(points[0,:],points[1,:], c=colors, marker='x', label=legends)
+
+#plt.savefig("fig/pseudo_rgb_points.png")
+
 #plt.figure()
-#plt.subplot(121)
-view = spy.imshow(I, (34, 25, 8))
-plt.scatter([20, 100, 400], [20, 70, 30], c='r', marker='x')
-#plt.subplot(122)
-#input()
+plt.subplot(122, aspect='auto')
+for i in range(points.shape[0]+1):
+    plt.plot(hico_wl[:,0], I[points[1,i], points[0,i], :], c=colors[i])
+plt.legend(legends)
+plt.xlabel("Wavelength [nm]")
+plt.ylabel("Power")
+
+#plt.savefig("fig/pseudo_rgb_points_spectra.png")
+
 plt.savefig("fig/pseudo_rgb_points.png")
+
+plt.show()
+
+
+
 
 
 # Note that quite a few libraries assume a matrix layout where
 # each row is a spectral vector, rather than each column as in
 # equation 2 of the assignment text. Read the documentation of
 # those libraries carefully.
+
+input()
