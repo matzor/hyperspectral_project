@@ -65,17 +65,12 @@ legends = ["Deep water", "Shallow water", "Vegetation"]
 view = spy.imshow(I, (34, 25, 8), fignum=10)
 plt.scatter(points[0,:],points[1,:], c=colors, marker='x', label=legends)
 
-#plt.savefig("fig/pseudo_rgb_points.png")
-
-#plt.figure()
 plt.subplot(122, aspect='auto')
 for i in range(points.shape[0]+1):
     plt.plot(hico_wl[:,0], I[points[1,i], points[0,i], :], c=colors[i])
 plt.legend(legends)
 plt.xlabel("Wavelength [nm]")
 plt.ylabel("Power")
-
-#plt.savefig("fig/pseudo_rgb_points_spectra.png")
 
 plt.savefig("fig/pseudo_rgb_points.png")
 
