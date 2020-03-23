@@ -30,7 +30,10 @@ We use the NASA OBPG algorithm, defined in equation 4 in the assignment
 \cite{assignment}, as well as the parameters given there, to try to 
 visualize the chlorophyll contents. Using the closest available wavelengths 
 in the dataset, $\lambda_{green} = 553$ (i = 26) and $\lambda_{blue} = [444, 490, 507]$ 
-(i = [7, 15, 18]). The results can be seen in \cref{fig:obpg}.
+(i = [7, 15, 18]). The results can be seen in \cref{fig:obpg}. We can clearly 
+see high concentrations on the north west coast, same place as in \cref{fig:kmean}, 
+but now we also see quite a bit on the southern coast as well. Thus it seems that this 
+algorithm performs better than the k-means clustering. 
 
 \begin{figure}
     \centering

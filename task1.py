@@ -63,7 +63,7 @@ points = np.array([[20, 100, 400], [20, 70, 30]]) # [[x0, x1, x2], [y0, y1, y2]]
 colors = ['g', 'r', 'y']
 legends = ["Deep water", "Shallow water", "Vegetation"]
 view = spy.imshow(I, (34, 25, 8), fignum=10)
-plt.scatter(points[0,:],points[1,:], c=colors, marker='x', label=legends)
+plt.scatter(points[0,:],points[1,:], c=colors, marker='x', label=legends, s=100)
 
 plt.subplot(122, aspect='auto')
 for i in range(points.shape[0]+1):

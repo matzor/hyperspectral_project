@@ -10,10 +10,14 @@ HICO_noisy    = M['HICO_noisy']    # HICO_original with added noise
 hico_wl       = M['hico_wl']       # Physical wavelength corresponding to band i
 seawater_Rs   = M['seawater_Rs']
 
+deep_water_Rrs = np.loadtxt('data/deep_water_Rrs.txt')
+shallow_water_Rrs = np.loadtxt('data/shallow_water_Rrs.txt')
+
 print("HICO_original.shape", HICO_original.shape)
 print("HICO_noisy.shape", HICO_noisy.shape)
 print("hico_wl.shape", hico_wl.shape)
 print("seawater_Rs.shape", seawater_Rs.shape)
+print("Rrs.shape", deep_water_Rrs.shape)
 
 I = HICO_original
 
@@ -38,7 +42,7 @@ def kmeans_cluster():
         plt.xlabel("Wavelength [nm]")
         plt.savefig("fig/kmean/kmean_" + str(i) + ".png")
 
-def nasa_obpg():
+def nasa_obpg(Img):
     # Parameters for the NASA OBPG algorithm 
     a = [0.3272, -2.9940, 2.7218, -1.2259, -0.5683]
     l_green = 555
@@ -64,5 +68,17 @@ def nasa_obpg():
     plt.savefig("fig/2b_nasa.png")
     plt.show()
 
+def calculate_atmospheric_scattering_coefficients(Img, point, Rrs):
+    ones = np.ones(Rrs.shape[0])
+    A = np.empty((Rrs.shape[0], 2))
+    A[:,0] = Rrs
+    A[:,1] = ones
+    B = Img[point[0], point[1], :]
+    B = B.reshape((100, 1))
+    print("A.shape:\n", A.shape)
+    print("B.shape:\n", B.shape)
+    a = np.linalg.solve(A, B)
+    print(a)
+    return a
 
-nasa_obpg()
+print(calculate_atmospheric_scattering_coefficients(I, [20, 20], deep_water_Rrs))
