@@ -44,6 +44,33 @@ algorithm performs better than the k-means clustering.
 
 \subsection{How can we estimate the reflectance from the surface of the ocean?}
 
+The data in the HICO dataset actually contains the measurement of radiance exiting the top 
+of the atmosphere, and not the radiance of the water directly. Therefore we must recover the 
+radiance $R_{rs}$ of the water from the top of atmosphere (TOA) measurements. This is done with 
+the empirical line (ELM) method, as described in \cite{assignment}, on the form \cref{eq:R_rs}. 
+Where $a$ and $b$ are terms that model the absorption of light in the atmosphere, which is to 
+be estimated, and $L$ is the measured value in the HICO dataset. 
+
+\begin{equation}
+    \label{eq:R_rs}
+    R_{rs}(\lambda) = \frac{L(\lambda) - b(\lambda)}{a(\lambda)}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/pseudo_rgb_corrected.png}
+    \caption{Pseudo RGB image of the atmosphere corrected image}
+    \label{fig:RGB_corrected}
+\end{figure}
+
+After performing the atmospheric correction, the resulting image is shown in 
+\cref{fig:RGB_corrected}. It is very difficult to see a clear difference between 
+the two by only looking at the image, but if we look at the pixel values for the red, 
+green and blue channels separately, we see that the blue color channel is only about 2\% 
+of the original, uncorrected pixel value, while the red and blue channels are about 9-10\% 
+of their original values. Thus it would seem that the atmospheric correction removes some of 
+the blue color of the image. 
+
 \subsection{Compute chlorophyll concentration using atmosphere-corrected data}
 
 \subsection{Classify land versus water}
