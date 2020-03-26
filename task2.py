@@ -39,7 +39,7 @@ def get_index_of_wavelength(wavelength):
             #print("L ", i, hico_wl[i])
             return i
 
-def kmeans_cluster():
+def kmeans_cluster(I, filename):
     """ 
     Runs K-means clustering on HICO array with 1 - 10 number
     of classes, and saves result to file
@@ -55,13 +55,16 @@ def kmeans_cluster():
         for j in range(c.shape[0]):
             pylab.plot(hico_wl[:,0], c[j])
         plt.xlabel("Wavelength [nm]")
-        plt.savefig("fig/kmean/kmean_" + str(i) + ".png")
+        plt.savefig("fig/kmean/" + filename + str(i) + ".png")
 
-def nasa_obpg():
+def nasa_obpg(I, filename):
     """ 
     Runs NASA OBPG algorithm with default parameters
     """
     # Parameters for the NASA OBPG algorithm 
+    I_temp = np.empty_like(I)
+    I_temp[:,:,:] = I[:,:,:]
+
     a = [0.3272, -2.9940, 2.7218, -1.2259, -0.5683]
     l_green = 555
     l_blue = [443, 490, 510]
@@ -75,18 +78,18 @@ def nasa_obpg():
     ydim = HICO_original.shape[1]
 
     img = np.empty((xdim, ydim))
-    I[land_mask] = 0
+    I_temp[land_mask] = 0
     
     for x in range(xdim):
         for y in range(ydim):
             img[x, y] = a[0]
             for i in range(1, len(a)):
-                img[x, y] += a[i] * np.log10(np.max(I[x, y, i_blue]) / I[x, y, i_green])
+                img[x, y] += a[i] * np.log10(np.max(I_temp[x, y, i_blue]) / I_temp[x, y, i_green])
     #img = 10 ** img
     plt.figure()
     plt.imshow(img)
-    plt.savefig("fig/2b_nasa_cor.png")
-    plt.show()
+    plt.savefig("fig/" + filename + ".png")
+    
 
 
 def calculate_atmospheric_scattering_coefficients(Img, points, Rrs, i_lambda_start, i_lambda_stop):
@@ -95,9 +98,10 @@ def calculate_atmospheric_scattering_coefficients(Img, points, Rrs, i_lambda_sta
     reflectance from the surface through atmosphere
     Inputs:
         Img: HICO array
-        point: reference points, ie. deep water or shallow water,
-        (x, y) coordinates
+        point: reference points, ie. deep water or shallow water, 
+            shape: [[x, y], [x, y]]
         Rrs: Calibrated remote sensing reflectance
+            shape: np array 100 x 2
         i_lambda_start: index of first wavelength
         i_lambda_stop: index of last wavelength
     Returns:
@@ -133,7 +137,16 @@ def calculate_atmospheric_scattering_coefficients(Img, points, Rrs, i_lambda_sta
 
 ## Estimate the reflectance from the surface of the ocean
 
-def run_task_c():
+def atmospheric_correction(I):
+    """ 
+    Perform atmospheric correction by Empirical Line Method (ELM)
+    Also prints out color changes between original and output image
+    (debug info)
+    Input:
+        I: Image cube to be corrected
+    Returns:
+        img: corrected image cube
+    """
     points = np.array([[20, 20], [100, 70]])      # Deep water, Shallow water
     R = 34
     G = 25
@@ -145,10 +158,11 @@ def run_task_c():
     a, b = calculate_atmospheric_scattering_coefficients(I, 
         points, Rrs, i_start, i_stop)
 
-    plt.figure(1)
+    fig_n = 9
+    plt.figure(fig_n)
     plt.subplot(121)
     plt.title("Original")
-    spy.imshow(I, (34, 25, 8), fignum=1)
+    spy.imshow(I, (34, 25, 8), fignum=fig_n)
 
 
     RGB_d_org = [I[20, 20, R], I[20, 20, G], I[20, 20, B]]
@@ -160,35 +174,40 @@ def run_task_c():
 
     print("Deep water: ", RGB_d_org, "Shallow water: ", RGB_s_org)
     
-
+    img = np.zeros_like(I)
     for i in range(i_start, i_stop):
-        I[:,:,i] = (I[:,:,i] - b[i]) / a[i]
+        img[:,:,i] = (I[:,:,i] - b[i]) / a[i]
 
     plt.subplot(122)
     plt.title("Corrected")
-    spy.imshow(I, (34, 25, 8), fignum=1)
+    spy.imshow(I, (34, 25, 8), fignum=fig_n)
     plt.savefig("fig/pseudo_rgb_corrected.png")
-    plt.show()
+    #plt.show()
     
 
-    RGB_d_cor = [I[20, 20, R], I[20, 20, G], I[20, 20, B]]
-    RGB_s_cor = [I[100, 70, R], I[100, 70, G], I[100, 70, B]]
+    RGB_d_cor = [img[20, 20, R], img[20, 20, G], img[20, 20, B]]
+    RGB_s_cor = [img[100, 70, R], img[100, 70, G], img[100, 70, B]]
 
-    R_mean_cor = np.mean(I[:,:,R])
-    G_mean_cor = np.mean(I[:,:,G])
-    B_mean_cor = np.mean(I[:,:,B])
+    R_mean_cor = np.mean(img[:,:,R])
+    G_mean_cor = np.mean(img[:,:,G])
+    B_mean_cor = np.mean(img[:,:,B])
 
     print("Deep water: ", RGB_d_cor, "Shallow water: ", RGB_s_cor)
 
     print("Color ratio:")
-    for i in range(len(RGB_d_cor)):
-        print(i)
-        print(RGB_d_cor[i] / RGB_d_org[i])
-        print(RGB_s_cor[i] / RGB_s_org[i])
-    
     print("-"*80)
     print(R_mean_cor/R_mean, G_mean_cor/G_mean, B_mean_cor/B_mean)
 
-run_task_c()
+    return img
 
-nasa_obpg()
+
+
+kmeans_cluster(I, "kmean_")
+
+nasa_obpg(I, "2b_nasa")
+
+I_cor = atmospheric_correction(I)
+
+nasa_obpg(I_cor, "2d_nasa_corrected")
+
+kmeans_cluster(I_cor, "kmean_corrected")
