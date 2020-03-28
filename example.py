@@ -1,6 +1,7 @@
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
 import numpy as np
+import spectral as spy
 
 M             = loadmat('data/HICO.mat')
 HICO_original = M['HICO_original'] # Hyperspectral image cube
@@ -34,8 +35,8 @@ I[land_mask] = 0
 
 # Plot a single spectral band
 plt.imshow(I[:,:,30])
+#spy.imshow(I, (34, 25, 8))
 plt.show()
-
 # Note that quite a few libraries assume a matrix layout where
 # each row is a spectral vector, rather than each column as in
 # equation 2 of the assignment text. Read the documentation of

@@ -31,18 +31,21 @@ We use the NASA OBPG algorithm, defined in equation 4 in the assignment
 visualize the chlorophyll contents. Using the closest available wavelengths 
 in the dataset, $\lambda_{green} = 553$ (i = 26) and $\lambda_{blue} = [444, 490, 507]$ 
 (i = [7, 15, 18]). The results can be seen in \cref{fig:obpg}. We can clearly 
-see high concentrations on the north west coast, same place as in \cref{fig:kmean}, 
-but now we also see quite a bit on the southern coast as well. Thus it seems that this 
+see high concentrations on the north west coast (assuming north is at the 
+top of the image), same place as in \cref{fig:kmean}, but now we also see 
+quite a bit on the southern coast as well. Thus it seems that this 
 algorithm performs better than the k-means clustering. 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{../fig/2b_nasa.png}
-    \caption{Results from the NASA OBPG algorithm, showing chlorophyll concentrations}
+    \includegraphics[width=\textwidth]{../fig/NASA OBPG, original.png}
+    \caption{Results from the NASA OBPG algorithm, showing chlorophyll concentrations 
+    in the water}
     \label{fig:obpg}
 \end{figure}
 
 \subsection{How can we estimate the reflectance from the surface of the ocean?}
+\label{sec:atmoshperic_cor}
 
 The data in the HICO dataset actually contains the measurement of radiance exiting the top 
 of the atmosphere, and not the radiance of the water directly. Therefore we must recover the 
@@ -73,7 +76,77 @@ the blue color of the image.
 
 \subsection{Compute chlorophyll concentration using atmosphere-corrected data}
 
+After performing the atmospheric correction, as described in \cref{sec:atmoshperic_cor}, 
+we perform the NASA OBPG algorithm again on the corrected image cube. As we can 
+see from the results in \cref{fig:obpg_corrected}, it is quite different from the 
+original results from \cref{fig:obpg}. The strong concentration we found at the north 
+west coast of the original (\cref{fig:obpg}), is no longer to be seen in the corrected 
+image. Instead, we see a high concentration of chlorophyll on the south eastern coast, 
+as well as a small patch in the bay on the western part of the landmass. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/NASA OBPG, corrected.png}
+    \caption{Results from the NASA OBPG algorithm using the atmospheric correction described 
+    in \cref{sec:atmoshperic_cor}, showing chlorophyll concentrations in the water}
+    \label{fig:obpg_corrected}
+\end{figure}
+
+\todo{Plot figures before and after side-by-side?}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/kmean/kmean_corrected8.png}
+    \caption{K-mean clustering performed on the atmospheric corrected image cube}
+    \label{fig:kmean_corrected}
+\end{figure}
+
+
+
 \subsection{Classify land versus water}
+\label{sec:landmask}
+
+We want to classify only the chlorophyll content of the water, we're not interested 
+in looking at the land. Therefore we want to mask out the landmass and show only 
+the water. We again use K-means clustering to classify the data into different 
+classes. By performing it multiple times for varying numbers of classes and comparing 
+the result from \cref{fig:kmean}, \cref{fig:kmean_corrected}, as well as all other 
+iterations from 1-10 classes on both corrected and original data, we find that 
+performing k-means clustering with 10 clusters on the atmospherically corrected 
+image cube gives the best performance regarding classifying water vs land. Setting 
+the max number of iterations to 100, the algorithm converges after around 80 iterations, 
+giving a good result. 
+
+After the k-means clustering is performed, we look at the spectral plot of the 
+different classes. We know from \cref{sec:representative_spec} roughly how the 
+spectra of water looks compared to land/vegetation. We the pick the spectral lines 
+from the k-means result that most resemble the spectral lines of water, and we remove 
+any lines that resemble those of land/vegetation. We then end up with a handful of 
+different classes that represents water, and the rest is land. We set the pixel values 
+of all points inside the water classes to 1, and all other pixels to 0 to create the 
+mask. The mask itself is shown in \cref{fig:landmask}. When put over the image, we get 
+\cref{fig:mask_rgb}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/landmask.png}
+    \caption{The mask found in \cref{sec:landmask}}
+    \label{fig:landmask}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/rgb_masked.png}
+    \caption{Masking away the land area}
+    \label{fig:mask_rgb}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/masked_obpg.png}
+    \caption{Running the OBPG algorithm on the masked image}
+    \label{fig:mask_obpg}
+\end{figure}
 
 \subsection{Other bio-geophysical parameters}
 
