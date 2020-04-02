@@ -86,13 +86,13 @@ def nasa_obpg(I, filename):
             img[x, y] = a[0]
             for i in range(1, len(a)):
                 img[x, y] += a[i] * np.log10(np.max(I_temp[x, y, i_blue]) / I_temp[x, y, i_green])
-    img = 10 ** img
+    #img = 10 ** img
     #p_min = -2
     #p_max = 1
     plt.figure()
     plt.title(filename)
     #plt.imshow(img, vmax=p_max, vmin=p_min)
-    plt.imshow(img)
+    plt.imshow(img, cmap="nipy_spectral")
     plt.savefig("fig/" + filename + ".png")
     
 
@@ -265,21 +265,23 @@ def plot_masked_image(I):
     spy.imshow(I, rgb, fignum=fignr)
 
     plt.subplot(122)
-    plt.title("RGB with land mask")
+    plt.title("RGB with kmeans based land mask")
 
-    #I[land_mask] = 0
+    #I[mask] = 0
 
     for i in range(hico_wl.shape[0]):
         I[:,:,i] = I[:,:,i] * mask
         
     ### WHY DOES IT CHANGE COLORS???
 
+    print("I shape: ", I.shape)
+
     spy.imshow(I, rgb, fignum=fignr)
     #spy.imshow(I, rgb)
 
     plt.savefig("fig/rgb_masked.png")    
 
-    nasa_obpg(I, "masked_obpg.png")
+    nasa_obpg(I, "NASA OBPG, with kmeans mask")
 
 
 ## doing the stuff 
