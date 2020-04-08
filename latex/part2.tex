@@ -1,6 +1,7 @@
 \section{Classification \& Bio-geophysical Parameter Retrieval}
 
 \subsection{Can we predict where there is chlorophyll through classification?}
+\label{sec:classify}
 
 We will use \textit{K-Means clustering} to classify the data. K-means clustering is a 
 unsupervised learning algorithm that can be used to classify and cluster data into $k$ 
@@ -36,7 +37,7 @@ top of the image), same place as in \cref{fig:kmean}, but now we also see
 quite a bit on the southern coast as well. Thus it seems that this 
 algorithm performs better than the k-means clustering. 
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{../fig/NASA OBPG, original.png}
     \caption{Results from the NASA OBPG algorithm, showing chlorophyll concentrations 
@@ -92,7 +93,6 @@ as well as a small patch in the bay on the western part of the landmass.
     \label{fig:obpg_corrected}
 \end{figure}
 
-\todo{Plot figures before and after side-by-side?}
 
 \begin{figure}
     \centering
@@ -127,26 +127,43 @@ of all points inside the water classes to 1, and all other pixels to 0 to create
 mask. The mask itself is shown in \cref{fig:landmask}. When put over the image, we get 
 \cref{fig:mask_rgb}.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{../fig/landmask.png}
-    \caption{The mask found in \cref{sec:landmask}}
-    \label{fig:landmask}
-\end{figure}
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=\textwidth]{../fig/landmask.png}
+%    \caption{The mask found in \cref{sec:landmask}}
+%    \label{fig:landmask}
+%\end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{../fig/rgb_masked.png}
     \caption{Masking away the land area}
     \label{fig:mask_rgb}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{../fig/NASA OBPG, with kmeans mask.png}
-    \caption{Running the OBPG algorithm on the masked image}
-    \label{fig:mask_obpg}
-\end{figure}
+\begin{figure}[h!]
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../fig/landmask.png}
+        \caption{The mask found in \cref{sec:landmask}, based on kmeans clustering}
+        \label{fig:landmask}
+        \end{minipage}
+        %\hspace{1.2cm}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=1.5\textwidth]{../fig/NASA OBPG, with kmeans mask.png}
+        \caption{Running the OBPG algorithm on the masked image, using mask from \cref{fig:landmask}}
+        \label{fig:mask_obpg}
+        \end{minipage}%
+    \end{figure}
+
+
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=\textwidth]{../fig/NASA OBPG, with kmeans mask.png}
+%    \caption{Running the OBPG algorithm on the masked image}
+%    \label{fig:mask_obpg}
+%\end{figure}
 
 \subsection{Other bio-geophysical parameters}
 
@@ -154,7 +171,23 @@ In the available spectral measurements between 400-1000nm we may find several
 other kinds of bio-geophysical parameters. In general, bio-geophysical parameters 
 include biological (plant species, interactions in the ecology, biotic 
 productivity), geological (soil types, erosion), and physical (light, heat) \cite{website:esa_bio-geophysical}. 
-Examples include, phytoplankton pigments and gelbstoff \cite{Lee:02}, or land degradation 
-processes in semi-arid geographical areas \cite{1025751}.
+Examples include detecting phytoplankton pigments and gelbstoff \cite{Lee:02}, or land degradation 
+processes in semi-arid geographical areas \cite{Kaufmann2002}.
 
 \subsection{Alternative atmospheric correction methods}
+
+One of the drawbacks of using the empirical line method (ELM) is that it requires at 
+least one field, laboratory, or other reference spectrum, preferably 2 or more like 
+the 2 reference spectra used in this report (shallow and deep water) to create the 
+linear regression used in removing the solar- and atmospheric path radiance. If such 
+reference spectra, for all required wavelengths, is not available for the region of 
+interest, this method can not be used. \cite{Karpouzli2003} 
+
+There exists a whole lot of different atmospheric correction tools and algorithms. 
+Harris Geospatial lists 9 different tools available for ENVI \cite{website:harrisgeo}, 
+including Dark Subtraction, Empirical Line, FLAASH, Flat Field, IAR, Log Residuals, 
+QUAC, Thermal Atmospheric Correction, and Convert to Emissivity and Temperature. 
+
+For instance, the Flat Field Correction algorithm can be easily implemented 
+by normalizing the images to an area of known "flat" reflectance, where 
+the average spectrum from a region of interest can be used as reference.

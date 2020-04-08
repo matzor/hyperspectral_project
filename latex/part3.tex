@@ -1,8 +1,59 @@
 \section{Dimensionality Reduction \& Noise Filtering}
 
+The HICO image cube is converted to a matrix on the form L x N, 
+with $L$ spectral bands rows, and $N = WH$ columns. 
+
 \subsection{What is dimensionality reduction?}
 
+Dimensionality reduction is the act of reducing the amount of random variables 
+to consider in for instance machine learning and statistics, involving feature 
+selection and feature extraction. Thus making the data smaller and making 
+analyzing it faster and easier. 
+
+Considering \cref{fig:point_spectra}, we see that there are quite a few similarities 
+in the spectra of the various points. Looking at the two points in the water (shallow 
+and deep), we see that the spectra are almost identical to each other for wavelengths 
+between around 400 - 470nm, except for the clear difference in the amplitude. Even the 
+spectra for the vegetation seem to share this characteristic. For wavelengths between 
+470 - 800nm all spectra seem to have unique signatures, until the two points in the 
+water again seem to share quite similar spectra for wavelengths over 800nm, with only 
+small variations between the two. An other thing to consider is the fact that the 
+atmospheric correction algorithm used in \cref{sec:atmoshperic_cor} is invalid for 
+wavelengths outside the range 438 - 730nm, so these invalid bands can be dropped. 
+Thus there seems to be some opportunities to reduce the dimensionality in the 
+spectral dimensions for the aforementioned wavelengths.
+
+In the spatial direction, we could for instance ignore all of the landmass, as we 
+are only interested in looking at the water. This can be done as described in 
+\cref{sec:landmask}, where all points on land are simply set to 0, thus reducing the 
+spatial dimension significantly by removing a big chunk of the image. The spatial 
+dimension can be reduced further by doing a nearest neighbor approach to cluster data 
+together, for instance in the deep water in the upper left part of the image, \cref{fig:pseudo_rgb}, 
+where a portion of the ocean seem to be very similar in appearance. This can be done 
+using for example k-means clustering, as described previously in \cref{sec:classify}. 
+
 \subsection{Principal Component Analysis (PCA)}
+
+PCA is a dimensionality reduction technique that transforms the columns of a dataset 
+into a new set features, by finding a new set of directions that explain the maximum 
+variability in the data \cite{prabhakaran2019}. These new coordinate axes/directions 
+are known as the Principal Components (PCs). The dataset columns contains the amount 
+of variance of the data, computing the PCs will help explain the vast information in 
+the original data in a fewer amount of columns. 
+
+Original data shape:  (1000, 100)
+PCA dataframe shape:  (1000, 100)
+PCA weights shape:  (100, 100)
+\todo{So 100 weights per column?? 100 x 100 weights in total??}
+
+The weights in the PCA is the eigenvectors of X. Each principal component is the dot 
+product of its weights and the mean-centered data (each column of X is subtracted from 
+its own mean, so the mean of each column is zero). 
+
+\begin{equation}
+    PC_i = weights \cdot X_{meancentered}
+\end{equation}
+
 
 \subsection{How does dimensionality reduction via PCA afect classification?}
 
