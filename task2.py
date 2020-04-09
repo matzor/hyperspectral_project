@@ -31,7 +31,7 @@ def get_index_of_wavelength(wavelength):
     """ 
     Input: Approximate wavelength in HICO array, in nm
 
-    Output: Index of closest wavelength in HICO array
+    Returns: Index of closest wavelength in HICO array
     """
     from math import isclose
     for i in range(hico_wl.shape[0]):
@@ -43,6 +43,10 @@ def kmeans_cluster(I, filename):
     """ 
     Runs K-means clustering on HICO array with 1 - 10 number
     of classes, and saves result to file
+
+    Input:
+        I: Hyper spectral image cube; np.array size (H, W, L)
+        filename: filename prefix for the saved images
     """
     for i in range(1, 11): 
         m, c = spy.kmeans(I, i, 50)
@@ -53,14 +57,24 @@ def kmeans_cluster(I, filename):
         plt.subplot(122)
         plt.title("K-cluster means")
         for j in range(c.shape[0]):
-            pylab.plot(hico_wl[:,0], c[j])
-        plt.xlabel("Wavelength [nm]")
+            if I.shape[2] == hico_wl.shape[0]:
+                pylab.plot(hico_wl[:,0], c[j])
+            else:
+                pylab.plot(c[j])
+        if I.shape[2] == hico_wl.shape[0]:
+            plt.xlabel("Wavelength [nm]")
+        else:
+            plt.xlabel("Principal Component")
         plt.savefig("fig/kmean/" + filename + str(i) + ".png")
 
 def nasa_obpg(I, filename):
     """ 
     Runs NASA OBPG algorithm with default parameters,
     saves result to file
+
+    Input: 
+        I: HICO image cube
+        filename: filename of plotted image saved to file
     """
     # Parameters for the NASA OBPG algorithm 
     I_temp = np.empty_like(I)
@@ -101,6 +115,7 @@ def calculate_atmospheric_scattering_coefficients(Img, points, Rrs, i_lambda_sta
     """ 
     Calculates the a and b coefficients for estimating 
     reflectance from the surface through atmosphere
+
     Inputs:
         Img: HICO array
         point: reference points, ie. deep water or shallow water, 
@@ -147,6 +162,7 @@ def atmospheric_correction(I):
     Perform atmospheric correction by Empirical Line Method (ELM)
     Also prints out color changes between original and output image
     (debug info)
+
     Input:
         I: Image cube to be corrected
     Returns:
@@ -211,6 +227,7 @@ def make_land_mask(I):
     Checks for peaks in pixel intensity after specific wavelength
     Assuming water has decreasing intensity for increasing wavelength.
     Also saves land mask as png. 
+
     Input:
         I: Image cube (hyperspectral, HICO)
     Returns:
@@ -290,7 +307,7 @@ def plot_masked_image(I):
 
 #nasa_obpg(I, "NASA OBPG, original")
 
-I_cor = atmospheric_correction(I)
+#I_cor = atmospheric_correction(I)
 
 #nasa_obpg(I_cor, "NASA OBPG, corrected")
 
@@ -298,4 +315,4 @@ I_cor = atmospheric_correction(I)
 
 #mask = make_land_mask(I_cor)
 
-plot_masked_image(I_cor)
+#plot_masked_image(I_cor)
