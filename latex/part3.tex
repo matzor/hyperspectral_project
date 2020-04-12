@@ -80,6 +80,13 @@ losing any significant data.
     [0.91, 0.08, 0.01, 0,   0,   0,   0,   0,   0,   0,  ]
 \end{equation}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/pca/variance_cumsum.png}
+    \caption{Plotting the cumulative variance of the principal components}
+    \label{fig:pca_var}
+\end{figure}
+
 Running K-means clustering on the PCA compressed data we notice a great increase in performance. 
 Clustering the compressed data, running kmeans for 1-10 classes and max 50 iterations, 
 now only takes about 53 seconds, compared to the 128 seconds 
@@ -104,12 +111,6 @@ separate the different classes of the ocean, as there is no longer individual cl
 shallow and deep water, but just one class in total for the ocean. Thus, this data is now 
 useless for our purposes. 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{../fig/pca/variance_cumsum.png}
-    \caption{Plotting the cumulative variance of the principal components}
-    \label{fig:pca_var}
-\end{figure}
 
 \begin{figure}
     \centering
@@ -120,6 +121,41 @@ useless for our purposes.
 
 
 \subsection{Maximum Noise Fraction}
+
+\todo{Discuss results, answer the questions}
+
+Maximum Noise Fraction, as described in \cite{green1988}, is summarized here and in \cite{assignment}. 
+It is also known as Noise Adjusted Principal Components, and will here be used to 
+remove additive noise on the image. 
+
+
+\begin{equation}
+    Cov(X) = \Sigma = \Sigma_s + \Sigma_n
+\end{equation}
+
+$\Sigma_s$ is the covariance of the signal and $\Sigma_n$ the covariance of the noise. 
+We find the eigendecomposition of $\Sigma_n \Sigma^{-1}$ to find the left-hand eigenvectors 
+$A^T$ and the right hand eigenvectors $V$. We then use these to calculate $\hat{X}$ for \cref{eq:mnf}.
+
+\begin{equation}
+    Y = A^T X
+\end{equation}
+
+\begin{equation}
+    \label{eq:mnf}
+    \hat{X} = V_{(:, 1:P)} Y_{(1:P, :)}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/task_3_case_1_P_1}
+    \caption{Maximum Noise Fraction and Principal Components analysis performed on test case 1, with 1 component used}
+    \label{fig:mnf_test}
+\end{figure}
+
+Q1: 1 comp seems better than 2
+Q2: See \cref{fig:mnf_test}
+\todo{Answer properly}
 
 \subsection{Maximum Noise Fraction on HICO noisy}
 

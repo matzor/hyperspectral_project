@@ -26,7 +26,7 @@ def encircle(x, y, ax=None, **kw):
 
 
 
-def do_pca(datamatrix, num_components):
+def do_pca(datamatrix, num_components, save_cumsum_plot = False):
     """ 
     Perform Principal Component Analysis on the dataset (on matrix form) 
 
@@ -63,7 +63,8 @@ def do_pca(datamatrix, num_components):
     plt.plot(variance_exp_cumsum, color='firebrick')
     plt.title("Variance by Principal Component", fontsize=22)
     plt.xlabel("# of PCs", fontsize=16)
-    plt.savefig("fig/pca/variance_cumsum.png")
+    if save_cumsum_plot:
+        plt.savefig("fig/pca/variance_cumsum.png")
     #plt.show()
 
     # getting original data back
