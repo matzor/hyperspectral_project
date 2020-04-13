@@ -46,6 +46,11 @@ def task3e():
     sigma_n = estimate_noise(X_n)
     sigma = np.cov(X_n)
 
+    # Comparing original noisy to original:
+    error_noise = error(X_n, X)
+    print("Noisy error, no filtering: ", error_noise)
+
+    # Comparing error between varying amount of components
     for i in range(len(P)):
         X_hat_mnf = mnf(X_n, P[i], sigma_n, sigma)
         error_mnf[i] = error(X_hat_mnf, X)
@@ -54,5 +59,10 @@ def task3e():
     print("P:         ", P)
     print("error_mnf: ", error_mnf)
     print("error_pca: ", error_pca)
+
+    min_i = np.argmin(error_mnf)
+    print("Smallest error for MNF found with P =", P[min_i])
+
+    
 
 task3e()

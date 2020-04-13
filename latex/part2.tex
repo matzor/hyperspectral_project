@@ -84,6 +84,7 @@ original results from \cref{fig:obpg}. The strong concentration we found at the 
 west coast of the original (\cref{fig:obpg}), is no longer to be seen in the corrected 
 image. Instead, we see a high concentration of chlorophyll on the south eastern coast, 
 as well as a small patch in the bay on the western part of the landmass. 
+\todo{Rewrite after fixing images, colors are wrong}
 
 \begin{figure}
     \centering
@@ -126,13 +127,8 @@ different classes that represents water, and the rest is land. We set the pixel 
 of all points inside the water classes to 1, and all other pixels to 0 to create the 
 mask. The mask itself is shown in \cref{fig:landmask}. When put over the image, we get 
 \cref{fig:mask_rgb}.
+\todo{Colors are wrong, fix code}
 
-%\begin{figure}
-%    \centering
-%    \includegraphics[width=\textwidth]{../fig/landmask.png}
-%    \caption{The mask found in \cref{sec:landmask}}
-%    \label{fig:landmask}
-%\end{figure}
 
 \begin{figure}[h!]
     \centering
@@ -157,13 +153,6 @@ mask. The mask itself is shown in \cref{fig:landmask}. When put over the image, 
         \end{minipage}%
     \end{figure}
 
-
-%\begin{figure}
-%    \centering
-%    \includegraphics[width=\textwidth]{../fig/NASA OBPG, with kmeans mask.png}
-%    \caption{Running the OBPG algorithm on the masked image}
-%    \label{fig:mask_obpg}
-%\end{figure}
 
 \subsection{Other bio-geophysical parameters}
 
