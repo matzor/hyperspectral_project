@@ -99,7 +99,7 @@ def nasa_obpg(I, filename):
         for y in range(ydim):
             img[x, y] = a[0]
             for i in range(1, len(a)):
-                img[x, y] += a[i] * np.log10(np.max(I_temp[x, y, i_blue]) / I_temp[x, y, i_green])
+                img[x, y] += a[i] * (np.log10(np.max(I_temp[x, y, i_blue]) / I_temp[x, y, i_green]))**i
     #img = 10 ** img
     #p_min = -2
     #p_max = 1
@@ -307,9 +307,9 @@ def plot_masked_image(I):
 
 #nasa_obpg(I, "NASA OBPG, original")
 
-#I_cor = atmospheric_correction(I)
+I_cor = atmospheric_correction(I)
 
-#nasa_obpg(I_cor, "NASA OBPG, corrected")
+nasa_obpg(I_cor, "NASA OBPG, corrected")
 
 #kmeans_cluster(I_cor, "kmean_corrected")
 
