@@ -307,9 +307,9 @@ def plot_masked_image(I):
 
 #nasa_obpg(I, "NASA OBPG, original")
 
-I_cor = atmospheric_correction(I)
+#I_cor = atmospheric_correction(I)
 
-nasa_obpg(I_cor, "NASA OBPG, corrected")
+#nasa_obpg(I_cor, "NASA OBPG, corrected")
 
 #kmeans_cluster(I_cor, "kmean_corrected")
 

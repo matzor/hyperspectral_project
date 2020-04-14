@@ -122,8 +122,6 @@ useless for our purposes.
 
 \subsection{Maximum Noise Fraction}
 
-\todo{Discuss results, answer the questions}
-
 Maximum Noise Fraction, as described in \cite{green1988}, is summarized here and in \cite{assignment}. 
 It is also known as Noise Adjusted Principal Components, and will here be used to 
 remove additive noise on the image. 
@@ -146,16 +144,41 @@ $A^T$ and the right hand eigenvectors $V$. We then use these to calculate $\hat{
     \hat{X} = V_{(:, 1:P)} Y_{(1:P, :)}
 \end{equation}
 
+The MNF algorithm is tested on 2 different test cases, with 1 and 2 components. The result from case 1 with 
+1 component is shown in \cref{fig:mnf_test_1_1}, and result from case 2 with 2 components in \cref{fig:mnf_test_2_2}. 
+
+For the first case, we find that using only one component gives the best result, for both PCA and MNF. Using 
+2 components, we get an average pixel error of 47.8\% for MNF and 47.4\% for PCA, whilst with only one component, 
+the error becomes 37.8\% and 37.2\% for MNF and PCA respectively. This implies that parts of the variance of 
+the noise may be contained into the principle component that gets dropped when only keeping one component. 
+The overall results are very similar, there is no clear difference between the MNF and PCA results. For comparison, 
+the mean error of the unfiltered image is 59.6\%, so it is clear that both algorithms improves the error. 
+
+For case 2 however, we find that using 1 component works better for PCA, but 2 components 
+work better for MNF. Using 1 component we get 89.3\% for MNF and 40.0\% for PCA, but 
+when using $P = 2$ we get an error of 50.7\% for MNF and 46.3\% for PCA. It is worth noting 
+that although PCA gives lower mean pixel error that the MNF gives colors that are more true 
+to the original, compared to the PCA where the red balloon in the image now has turned yellow. 
+The original unfiltered noisy image has a mean error of 42.3\%, thus only PCA with 1 component 
+is able to actually decrease the mean pixel error. \todo{Use SPy mnf instead?} 
+%Gives MUCH better result for case2_2. Comment on this? Redo whole last paragraph if using SPy
+
+
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{../fig/task_3_case_1_P_1}
     \caption{Maximum Noise Fraction and Principal Components analysis performed on test case 1, with 1 component used}
-    \label{fig:mnf_test}
+    \label{fig:mnf_test_1_1}
 \end{figure}
 
-Q1: 1 comp seems better than 2
-Q2: See \cref{fig:mnf_test}
-\todo{Answer properly}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/task_3_case_2_P_2}
+    \caption{Maximum Noise Fraction and Principal Components analysis performed on test case 2, with 2 component used. 
+    Between-neighbor difference is used to approximate the noise covariance used in the MNF.}
+    \label{fig:mnf_test_2_2}
+\end{figure}
+
 
 \subsection{Maximum Noise Fraction on HICO noisy}
 

@@ -10,7 +10,11 @@ def image_cube_to_matrix(image_cube):
     Returns:
         X: input reshaped to matrix X with L rows and N = WH columns
     """
-    [H,W,L] = image_cube.shape
+    if len(image_cube.shape) > 2:
+        [H,W,L] = image_cube.shape
+    else: 
+        H, W = image_cube.shape
+        L = 1
     X = np.reshape(image_cube, [H*W,L])
     X = X.T
     return X
@@ -53,6 +57,14 @@ def mnf(X, P, sigma_n, sigma):
 
     x_hat = vr[:,:P] @ Y[:P, :]
     return x_hat
+
+def spy_mnf(X, P, sigma_n):
+    signal = spy.calc_stats(X)
+    noise = spy.noise_from_diffs(X)
+    mnfr = spy.mnf(signal, noise)
+    denoised = mnfr.denoise(X, num=P)
+    x_hat = mnfr.reduce(X, num=P)
+    return denoised
 
 def estimate_noise(X):
     X_n = np.empty((X.shape[0], X.shape[1]-1))

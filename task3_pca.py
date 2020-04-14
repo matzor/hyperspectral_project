@@ -33,7 +33,8 @@ def do_pca(datamatrix, num_components, save_cumsum_plot = False):
     Input:
         datamatrix: np.array X with L rows and N = WH columns
     Returns:
-        df_pca: pca output, p x n
+        np_pca: pca output, p x n
+        np_orig_pca: pca output with original dimensions
     """
     # Preparing the dataset
     x = datamatrix.T
@@ -67,13 +68,14 @@ def do_pca(datamatrix, num_components, save_cumsum_plot = False):
         plt.savefig("fig/pca/variance_cumsum.png")
     #plt.show()
 
-    # getting original data back
-    df_orig = pca.inverse_transform(df_pca)
+    # getting original dimensions back
+    np_orig_pca = pca.inverse_transform(df_pca)
+    
     #pd.DataFrame(df_orig).round().head()
     #print(df_orig.shape)
     #np_pca = df_orig
     #np_pca = np_pca.T
-    return np_pca.T
+    return np_pca.T, np_orig_pca.T
     
 
 
