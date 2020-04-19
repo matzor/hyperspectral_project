@@ -5,7 +5,7 @@ import spectral as spy
 import time
 from task3_pca import do_pca
 from task2 import kmeans_cluster
-from mnf import mnf, error, estimate_noise, matrix_to_image_cube, image_cube_to_matrix
+from mnf import *
 
 M             = loadmat('data/HICO.mat')
 HICO_original = M['HICO_original'] # Hyperspectral image cube
@@ -52,10 +52,12 @@ def task3e():
 
     # Comparing error between varying amount of components
     for i in range(len(P)):
-        X_hat_mnf = mnf(X_n, P[i], sigma_n, sigma)
+        #x_cube = matrix_to_image_cube(X_n, [H,W,L])
+        X_hat_mnf = spy_mnf(HICO_noisy, P[i], sigma_n)
+        X_hat_mnf = image_cube_to_matrix(X_hat_mnf)
         error_mnf[i] = error(X_hat_mnf, X)
-        #X_hat_pca = do_pca(X_n, P[i])
-        #error_pca[i] = error(X_hat_pca, X)
+        _, X_hat_pca = do_pca(X_n, P[i])
+        error_pca[i] = error(X_hat_pca, X)
     print("P:         ", P)
     print("error_mnf: ", error_mnf)
     print("error_pca: ", error_pca)
@@ -63,6 +65,18 @@ def task3e():
     min_i = np.argmin(error_mnf)
     print("Smallest error for MNF found with P =", P[min_i])
 
+    rgb = (34, 25, 8)
+    fignr = 5
+    plt.figure(fignr)
+    plt.subplot(121)
+    plt.title("HICO noisy")
+    spy.imshow(HICO_noisy, rgb, fignum=fignr)
+    plt.subplot(122)
+    plt.title("Denoised using MNF with P = " + str(P[min_i]))
+    X_hat_mnf = spy_mnf(HICO_noisy, P[min_i], sigma_n)
+    spy.imshow(X_hat_mnf, rgb, fignum=fignr)
+    plt.savefig("fig/HICO_mnf.png")
+
     
 
-#task3e()
+task3e()

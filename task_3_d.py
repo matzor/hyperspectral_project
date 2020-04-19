@@ -3,7 +3,6 @@ from scipy.linalg import eig
 import matplotlib.pyplot as plt
 import numpy as np
 from task3_pca import do_pca
-from task3 import matrix_to_image_cube, image_cube_to_matrix
 from mnf import *
 
 def show_image(X):
@@ -27,8 +26,8 @@ sigma      = np.cov(X)
 print("X shape: ", X.shape)
 
 # Compute the MNF reconstruction of X
-X_hat_mnf = np.zeros(X.shape)
-#sigma_n = estimate_noise(X)
+#X_hat_mnf = np.zeros(X.shape)
+sigma_n = estimate_noise(X)
 #X_hat_mnf = mnf(X, P, sigma_n, sigma)
 
 # Using Spectral Python spy.mnf
