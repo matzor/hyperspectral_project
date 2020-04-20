@@ -44,7 +44,8 @@ def mnf(X, P, sigma_n, sigma):
         sigma: covariance of signal
 
     Returns:
-        x_hat: Maximum Noise Fraction 
+        x_hat: Maximum Noise Fraction, np.array 
+        same shape as X 
     """
 
     sigmas = sigma_n @ np.linalg.inv(sigma)
@@ -59,14 +60,36 @@ def mnf(X, P, sigma_n, sigma):
     return x_hat
 
 def spy_mnf(X, P, sigma_n):
+    """ 
+    Performs Maximum Noise Fraction on X
+    
+    Inputs:
+        X: Noisy signal, np.array [H,W,L]
+        P: Number of components
+        sigma_n: covariance of noise
+
+    Returns:
+        x_hat: Maximum Noise Fraction, np.array 
+        same shape as X 
+    """
     signal = spy.calc_stats(X)
     noise = spy.noise_from_diffs(X)
     mnfr = spy.mnf(signal, noise)
-    denoised = mnfr.denoise(X, num=P)
-    x_hat = mnfr.reduce(X, num=P)
-    return denoised
+    x_hat = mnfr.denoise(X, num=P)
+    x_reduced = mnfr.reduce(X, num=P)
+    return x_hat
 
 def estimate_noise(X):
+    """ 
+    Estmates the covariance of the noise component
+    of the input signal, using between-neighbor difference
+
+    Inputs:
+        X: signal, np.array shape [L x N]
+
+    Returns:
+        sigma_n: covariance of noise
+    """
     X_n = np.empty((X.shape[0], X.shape[1]-1))
     for i in range(X_n.shape[1]):
         X_n[:, i] = X[:,i] - X[:,i+1]
