@@ -67,7 +67,7 @@ def kmeans_cluster(I, filename):
             plt.xlabel("Principal Component")
         plt.savefig("fig/kmean/" + filename + str(i) + ".png")
 
-def nasa_obpg(I, filename):
+def nasa_obpg(I, filename, set_min_max_values=False):
     """ 
     Runs NASA OBPG algorithm with default parameters,
     saves result to file
@@ -75,6 +75,9 @@ def nasa_obpg(I, filename):
     Input: 
         I: HICO image cube
         filename: filename of plotted image saved to file
+
+    Returns: 
+        img: resulting image, np.array
     """
     # Parameters for the NASA OBPG algorithm 
     I_temp = np.empty_like(I)
@@ -101,14 +104,26 @@ def nasa_obpg(I, filename):
             for i in range(1, len(a)):
                 img[x, y] += a[i] * (np.log10(np.max(I_temp[x, y, i_blue]) / I_temp[x, y, i_green]))**i
     #img = 10 ** img
-    #p_min = -2
-    #p_max = 1
+    p_min = -2
+    p_max = 1
+
+    if set_min_max_values:
+        img = set_img_min_max_values(img, p_min, p_max)
+
     plt.figure()
     plt.title(filename)
-    #plt.imshow(img, vmax=p_max, vmin=p_min)
     plt.imshow(img, cmap="nipy_spectral")
     plt.savefig("fig/" + filename + ".png")
+    return img
     
+def set_img_min_max_values(img, minimum=0.1, maximum=10):
+    for row in range(img.shape[0]):
+        for col in range(img.shape[0]):
+            if img[row,col] > maximum:
+                img[row,col] = maximum
+            elif img[row,col] < minimum:
+                img[row,col] = minimum
+    return img
 
 
 def calculate_atmospheric_scattering_coefficients(Img, points, Rrs, i_lambda_start, i_lambda_stop):
@@ -202,7 +217,7 @@ def atmospheric_correction(I):
     plt.subplot(122)
     plt.title("Corrected")
     spy.imshow(I, (34, 25, 8), fignum=fig_n)
-    plt.savefig("fig/pseudo_rgb_corrected.png")
+    #plt.savefig("fig/pseudo_rgb_corrected.png")
     #plt.show()
     
 

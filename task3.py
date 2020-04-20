@@ -4,7 +4,7 @@ import numpy as np
 import spectral as spy
 import time
 from task3_pca import do_pca
-from task2 import kmeans_cluster
+from task2 import kmeans_cluster, nasa_obpg, atmospheric_correction
 from mnf import *
 
 M             = loadmat('data/HICO.mat')
@@ -20,7 +20,7 @@ def task3c():
     X = image_cube_to_matrix(HICO_original)
     print("X shape: ", X.shape)
     P = 10
-    x_pca = do_pca(X, P)
+    x_pca, _ = do_pca(X, P)
     print("X_pca shape: ", x_pca.shape)
     HICO_pca = matrix_to_image_cube(x_pca, [H,W,P])
     print("HICO_pca shape: ", HICO_pca.shape)
@@ -77,6 +77,67 @@ def task3e():
     spy.imshow(X_hat_mnf, rgb, fignum=fignr)
     plt.savefig("fig/HICO_mnf.png")
 
-    
 
-task3e()
+def task3g():
+    I = image_cube_to_matrix(HICO_original)
+    P = 2
+    colormap = "nipy_spectral"
+    set_min_max = True
+
+    _, X_hat_pca = do_pca(I, P)
+    X_hat_pca = matrix_to_image_cube(X_hat_pca, [H,W,L])
+    X = atmospheric_correction(HICO_original)
+    X_hat_pca = atmospheric_correction(X_hat_pca)
+
+    mask = np.load("land_mask.npy")
+    plt.figure()
+    for i in range(hico_wl.shape[0]):
+        X_hat_pca[:,:,i] = X_hat_pca[:,:,i] * mask
+        X[:,:,i] = X[:,:,i] * mask
+    X_obpg_pca = nasa_obpg(X_hat_pca, "obpg_pca_masked_P"+str(P), set_min_max_values=set_min_max)
+    X_obpg = nasa_obpg(X, "_", set_min_max_values=set_min_max)
+
+    plt.subplot(121)
+    plt.title("OBPG original HICO")
+    plt.imshow(X_obpg, cmap=colormap)
+
+    plt.subplot(122)
+    plt.title("OBPG PCA compressed HICO, P = " + str(P))
+    plt.imshow(X_obpg_pca, cmap=colormap)
+
+    plt.savefig("fig/PCA_v_original_OBPG_P" + str(P) +".png")
+
+def task3g_compare_Ps():
+    I = image_cube_to_matrix(HICO_original)
+    colormap = "nipy_spectral"
+    set_min_max = True
+
+    _, X_hat_pca2 = do_pca(I, 2)
+    _, X_hat_pca3 = do_pca(I, 3)
+    X_hat_pca2 = matrix_to_image_cube(X_hat_pca2, [H,W,L])
+    X_hat_pca3 = matrix_to_image_cube(X_hat_pca3, [H,W,L])
+    X_P2 = atmospheric_correction(X_hat_pca2)
+    X_P3 = atmospheric_correction(X_hat_pca3)
+
+    mask = np.load("land_mask.npy")
+    plt.figure()
+    for i in range(hico_wl.shape[0]):
+        X_P2[:,:,i] = X_P2[:,:,i] * mask
+        X_P3[:,:,i] = X_P3[:,:,i] * mask
+
+    X_P2 = nasa_obpg(X_P2, "_", set_min_max_values=True)
+    X_P3 = nasa_obpg(X_P3, "_", set_min_max_values=True)
+
+    plt.subplot(121)
+    plt.title("PCA + OBPG, P = 2")
+    plt.imshow(X_P2, cmap=colormap)
+
+    plt.subplot(122)
+    plt.title("PCA + OBPG, P = 3")
+    plt.imshow(X_P3, cmap=colormap)
+
+    plt.savefig("fig/PCA_OBPG_2_3.png")
+
+#task3e()
+#task3g()
+task3g_compare_Ps()

@@ -236,3 +236,36 @@ with the main difference being that the Principal Components associated with the
 ordered by descending signal-to-noise ratio rather than overall image variance. 
 
 \subsection{How can we best use the subspace?}
+
+Dimensionality reduction and compression are very useful tools when working with 
+large datasets like hyperspectral images as discussed in the previous sections, 
+but there are some disadvantages to it. An important thing to consider with PCA is 
+that it is a lossy compression technique. 
+When we perform the PCA, we lose some data and we are noe able to recreate this lost 
+data completely. Many encoding based compression techniques on the other hand can be 
+lossless. Another thing is that PCA might fail to capture all the discriminant 
+information of hyperspectral images, since features that are important for classification 
+tasks may not be high in signal energy. \cite{hybrid_compression}
+
+Apart from the fact that dimensionality reductions like PCA makes the dataset 
+smaller and easier to work with, it may also help in identifying underlying 
+information in the data. Looking back to the chlorophyll identification in 
+\cref{sec:task2}, we find that the chlorophyll may be found in the third 
+principal component found by the PCA algorithm. In \cref{fig:pca_obpg}, we 
+first do PCA with 2 and 3 principal components on the HICO dataset, before 
+correcting for the atmospheric absorption and running the NASA OBPG algorithm 
+to find the chlorophyll content of the ocean. Comparing the two cases, we 
+find that the first case, using P = 2, does not show any sign of the algae, 
+but we still see a difference between deep and shallow water. In the latter 
+case, with P = 3, we again see a image with similar characteristic to the one 
+in \cref{fig:mask_obpg} from the original, uncompressed data. Thus the 
+chlorophyll seems to be isolated in principal component number 3, and this 
+component alone can be isolated to further study the concentration. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../fig/PCA_OBPG_2_3.png}
+    \caption{Performing PCA with 2 (left) and 3 (right) principal components, 
+    then atmospheric correction followed by the NASA OBPG algorithm}
+    \label{fig:pca_obpg}
+\end{figure}
