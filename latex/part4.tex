@@ -7,7 +7,21 @@ deep learning network would be unfeasible due to the enormous amount of weights 
 nodes required to pass the full-scale image cube. Using this HICO set as an example, 
 with dimensions $500 \times 500 \times 100$, totalling 25.000.000 datapoints for the 
 input layer alone. This input layer would have to be connected to another layer with 
-$N$ nodes, requiring $N \times 25000000$. And thats just for the first layer. 
+$N$ nodes, requiring $N \times 25000000$ weights. And thats just for the first layer 
+alone. If more layers are used, we are going to run out of time and memory fast, as 
+computing the huge amount of variables takes increasing amount of time. 
+
+Using a convolutional neural network may be an option. Applying convolutional filters 
+on the input image, we may reduce the number of input parameters significantly, though 
+at the cost of increased computational complexity. 
+
+Another option may be to simply reduce the input image size. This may be done using 
+the dimensionality reduction techniques discussed in \cref{sec:dim_reduction}. 
+Alternatively, we may crop the original image into smaller subsets of images, each 
+image containing all spectral dimensions (the various wavelengths), but only a smaller 
+image in the spatial dimension. Similarly, the images can be cropped in the spectral 
+dimension, removing any uninteresting spectral bands and keeping only the bands we are 
+interested in studying. 
 
 \subsection{Multispectral-hyperspectral image fusion}
 
