@@ -138,6 +138,30 @@ def task3g_compare_Ps():
 
     plt.savefig("fig/PCA_OBPG_2_3.png")
 
+def examine_component(P_tot):
+    I = image_cube_to_matrix(HICO_original)
+    colormap = "nipy_spectral"
+    mask = np.load("land_mask.npy")
+
+    X_hat_reduced, X_hat_pca = do_pca(I, P_tot)
+    X_hat_reduced = matrix_to_image_cube(X_hat_reduced, [H,W,P_tot])
+    X_hat_pca = matrix_to_image_cube(X_hat_pca, [H,W,L])
+    for i in range(hico_wl.shape[0]):
+        X_hat_pca[:,:,i] = X_hat_pca[:,:,i] * mask
+
+    for i in range(P_tot):
+        X_hat_reduced[:,:,i] = X_hat_reduced[:,:,i] * mask
+
+    #X_P = nasa_obpg(X_hat_reduced, "_")
+
+    for P in range(P_tot):
+        plt.figure()
+        plt.title("PCA + OBPG, only P"+str(P))
+        plt.imshow(X_hat_reduced[:,:,P], cmap=colormap)
+        plt.savefig("fig/PCA_OBPG_only_P"+str(P)+".png")
+
 #task3e()
 #task3g()
-task3g_compare_Ps()
+#task3g_compare_Ps()
+
+examine_component(10)

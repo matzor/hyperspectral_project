@@ -67,7 +67,7 @@ def kmeans_cluster(I, filename):
             plt.xlabel("Principal Component")
         plt.savefig("fig/kmean/" + filename + str(i) + ".png")
 
-def nasa_obpg(I, filename, set_min_max_values=False):
+def nasa_obpg(I, filename, set_min_max_values=True):
     """ 
     Runs NASA OBPG algorithm with default parameters,
     saves result to file
@@ -107,8 +107,8 @@ def nasa_obpg(I, filename, set_min_max_values=False):
     p_min = -2
     p_max = 1
 
-    if set_min_max_values:
-        img = set_img_min_max_values(img, p_min, p_max)
+    #if set_min_max_values:
+    #    img = set_img_min_max_values(img, p_min, p_max)
 
     plt.figure()
     plt.title(filename)
@@ -116,15 +116,28 @@ def nasa_obpg(I, filename, set_min_max_values=False):
     plt.savefig("fig/" + filename + ".png")
     return img
     
-def set_img_min_max_values(img, minimum=0.1, maximum=10):
+def set_img_min_max_values(img, minimum=0.01, maximum=10):
     for row in range(img.shape[0]):
-        for col in range(img.shape[0]):
+        for col in range(img.shape[1]):
             if img[row,col] > maximum:
                 img[row,col] = maximum
+                #print("Max out of bounds:", img[row,col])
             elif img[row,col] < minimum:
                 img[row,col] = minimum
+                #print("Min out of bounds:", img[row,col])
     return img
 
+def set_img_min_max_values2(img, minimum=0.01, maximum=10):
+    for row in range(img.shape[0]):
+        for col in range(img.shape[1]):
+            for l in range(img.shape[2]):
+                if img[row,col,l] > maximum:
+                    img[row,col,l] = maximum
+                    #print("Max out of bounds:", img[row,col])
+                elif img[row,col,l] < minimum:
+                    img[row,col,l] = minimum
+                    #print("Min out of bounds:", img[row,col])
+    return img
 
 def calculate_atmospheric_scattering_coefficients(Img, points, Rrs, i_lambda_start, i_lambda_stop):
     """ 
@@ -315,12 +328,17 @@ def plot_masked_image(I):
 
     nasa_obpg(I, "NASA OBPG, with kmeans mask")
 
+def mask_image(I):
+    mask = np.load("land_mask.npy")
+    for i in range(hico_wl.shape[0]):
+        I[:,:,i] = I[:,:,i] * mask
+    return I
 
 ## doing the stuff 
 
 #kmeans_cluster(I, "kmean_")
 
-#nasa_obpg(I, "NASA OBPG, original")
+#nasa_obpg(I, "NASA OBPG, original", True)
 
 #I_cor = atmospheric_correction(I)
 
@@ -328,6 +346,11 @@ def plot_masked_image(I):
 
 #kmeans_cluster(I_cor, "kmean_corrected")
 
+
 #mask = make_land_mask(I_cor)
+
+#I_cor_masked = mask_image(I_cor)
+#kmeans_cluster(I_cor_masked, "kmean_corrected_masked")
+
 
 #plot_masked_image(I_cor)
