@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from task3_pca import do_pca
 from mnf import *
+import pca
 
 def show_image(X):
     plt.imshow(np.reshape(X.T, [H,W,L]))
@@ -41,6 +42,7 @@ print("X_hat_mnf shape: ", X_hat_mnf.shape)
 X_hat_pca = np.zeros(X.shape)
 #X_hat_pca[:P, :] = do_pca(X, P)
 _, X_hat_pca = do_pca(X, P)
+#X_hat_pca = pca.pca(X)
 print("X_hat_pca shape: ", X_hat_pca.shape)
 
 

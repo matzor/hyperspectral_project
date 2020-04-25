@@ -6,6 +6,7 @@ import time
 from task3_pca import do_pca
 from task2 import kmeans_cluster, nasa_obpg, atmospheric_correction
 from mnf import *
+import pca
 
 M             = loadmat('data/HICO.mat')
 HICO_original = M['HICO_original'] # Hyperspectral image cube
@@ -34,8 +35,25 @@ def task3c():
     end = time.time()
     print("Time elapsed: ", end - start)
 
+def task3c_self():
+    """ 
+    Runs PCA on HICO image cube, then kmeans on compressed data """
+    X = image_cube_to_matrix(HICO_original)
+    print("X shape: ", X.shape)
+    P = 10
+    x_pca = pca.pca(X)
+    print("X_pca shape: ", x_pca.shape)
+    HICO_pca = matrix_to_image_cube(x_pca, [H,W,L])
+    print("HICO_pca shape: ", HICO_pca.shape)
 
-#task2c()
+    plt.figure()
+    plt.imshow(HICO_pca[:,:,0])
+    plt.show()
+
+    start = time.time()
+    #kmeans_cluster(HICO_pca, "PCA_P_")
+    end = time.time()
+    print("Time elapsed: ", end - start)
 
 def task3e():
     P = [100, 50, 30, 10, 5, 3, 1]
@@ -164,4 +182,6 @@ def examine_component(P_tot):
 #task3g()
 #task3g_compare_Ps()
 
-examine_component(10)
+#examine_component(10)
+
+task3c_self()

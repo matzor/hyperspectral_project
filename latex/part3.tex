@@ -65,6 +65,9 @@ its own mean, so the mean of each column is zero).
 \subsection{How does dimensionality reduction via PCA afect classification?}
 
 PCA was implemented using the existing PCA algorithm from \textit{sklearn.decomposition}. 
+There was also an attempt to implement PCA from scratch, this implementation can be found in 
+the attached file \textit{pca.py}, but this gave reduced performance compared to the sklearn 
+function, so the latter was used for the rest of the report. 
 First we convert the HICO image cube into matrix form, as described in \cref{sec:dim_reduction}, 
 We then run the PCA with $P = 10$ principal components on this data matrix, returning 
 an $P \times N$ size matrix representing the compressed data. That is $10 \times 250000$ in size, 
@@ -199,7 +202,8 @@ is also performed, using the same number of components. The result can be found 
         \textbf{MNF} & 0.1023       & 0.0724      & 0.0561      & 0.0325      & 0.0274     & 0.0312     & 0.2424     \\
         \textbf{PCA} & 0.1023       & 0.0729      & 0.0566      & 0.0330      & 0.0254     & 0.0268     & 0.1048    
     \end{tabular} 
-    \caption{Comparing the results of using MNF and PCA on the HICO\_noisy dataset.}
+    \caption{Comparing the resulting average pixel error of using MNF and PCA on the HICO\_noisy dataset
+    using different number of Principal Components (P).}
     \label{table:mnf_pca}
 \end{table}
 

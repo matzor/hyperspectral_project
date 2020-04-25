@@ -147,7 +147,8 @@ as different shades of green for the varying concentrations and different classe
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{../fig/kmean/kmean_corrected15.png}
-    \caption{K-mean clustering performed on the atmospheric corrected image cube}
+    \caption{K-mean clustering performed on the atmospheric corrected image cube, over 
+	the valid wavelengths}
     \label{fig:kmean_corrected}
 \end{figure}
 
@@ -181,7 +182,7 @@ of all points inside the water classes to 1, and all other pixels to 0 to create
 mask. The mask itself is shown in \cref{fig:landmask}. When put over the image, we get 
 \cref{fig:mask_rgb}. We can then perform the NASA OBPG algorithm again on the 
 masked image, seen in \cref{fig:mask_obpg}.
-\todo{Colors are wrong, fix code}
+%\todo{Colors are wrong, fix code}
 
 
 \begin{figure}[h!]
